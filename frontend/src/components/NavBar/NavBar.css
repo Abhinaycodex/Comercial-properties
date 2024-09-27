@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Gupter:wght@400;500;700&family=Mukta:wght@200;300;400;500;600;700;800&display=swap');
+
+
+@media only screen and (max-width: 600px) {
+  .container {
+    flex-direction: column;
+  }
+}
+  
+  nav {
+    width: 100%;
+    height: 100px;
+    background-color: #0A57C7;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    
+ }
+  nav > div {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+ }
+  nav > div a {
+    padding: 10px ;
+    color: #161616;
+    background: white;
+    font-weight: 500;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+    border-radius: 20px;
+    
+ }
+  nav > div a:hover {
+    color: #bb0e37;
+ }
+  nav > a > button {
+    border: 1px solid #161616 98;
+    padding: 0.5rem 2rem;
+    background-color: #fef2f2;
+    cursor: pointer;
+    color: #161616;
+    letter-spacing: 1px;
+    font-weight: 500;
+    transition: all 0.3s;
+ }
+  nav > a > button:hover {
+    background-color: #161616;
+    color: #fff;
+ }
+  .navBtn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-color: transparent;
+    color: #292b46;
+    font-size: 1.4rem;
+    z-index: 150;
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    display: none;
+ }
+  .navBtn:hover {
+    color: #f26440;
+ }
+  .navPhone {
+    transition: all 0.5s;
+    transform: translateY(-200%);
+    width: 100%;
+    height: 100vh;
+    background-color: #292b46;
+    padding: 5vmax;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+ }
+  .navPhone > h2 {
+    font-size: 2rem;
+    color: #fff;
+ }
+  .navPhone > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+ }
+  .navPhone > div a {
+    color: #fff;
+    letter-spacing: 1px;
+    font-weight: 500;
+    transition: all 0.3s;
+ }
+  .navPhone > div a:hover {
+    color: #f26440;
+ }
+  .navPhone > a > button {
+    border: 1px solid #161616 98;
+    padding: 0.5rem 2rem;
+    background-color: #fef2f2;
+    cursor: pointer;
+    color: #161616;
+    letter-spacing: 1px;
+    font-weight: 500;
+    transition: 0.5s;
+ }
+  .navPhone > a > button:hover {
+    background-color: #161616;
+    color: #fff;
+ }
+  .navPhoneComes {
+    transform: translateY(0);
+ }
+  

@@ -1,0 +1,22 @@
+.property-card {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .property-thumbnail {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  .property-details {
+    width: 60%;
+  }
+  
+  .contact-section {
+    text-align: right;
+  }
+  

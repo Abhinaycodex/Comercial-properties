@@ -1,0 +1,31 @@
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  border: 1px solid #007bff;
+  background-color: white;
+  color: #007bff;
+}
+
+button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.section {
+  margin: 50px 0;
+  padding: 20px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  min-height: 400px; /* Add some height to demonstrate scrolling */
+}
+
+h2 {
+  margin-bottom: 20px;
+}
