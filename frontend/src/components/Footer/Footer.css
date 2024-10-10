@@ -33,8 +33,10 @@
   }
   
   .social-icons {
+
+    padding: 100px;
     display: flex;
-    gap: 15px;
+    gap: 25px;
   }
   
   .social-icons a {

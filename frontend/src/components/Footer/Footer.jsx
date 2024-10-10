@@ -1,4 +1,4 @@
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 import './Footer.css'; // Create this file for styling
 
 const Footer = () => {
@@ -15,11 +15,8 @@ const Footer = () => {
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
               <FaTwitter />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com/comercialproprty.in/" target="_blank" rel="noopener noreferrer">
               <FaInstagram />
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-              <FaLinkedinIn />
             </a>
           </div>
         </div>
@@ -30,22 +27,22 @@ const Footer = () => {
           <div className="addresses">
             <div className="address">
               <h4>Head Office</h4>
-              <p>123 Commercial St, New York, NY 10001</p>
+              <p>Dwarka sector 10</p>
             </div>
             <div className="address">
-              <h4>Branch Office</h4>
-              <p>456 Corporate Blvd, Los Angeles, CA 90015</p>
+              <h4>holding</h4>
+              <p>Abhinay & Harsh </p>
             </div>
             <div className="address">
-              <h4>Europe Office</h4>
-              <p>789 Business Rd, London, UK E1 6AN</p>
+              <h4>contact Info</h4>
+              <p>+91 9625949983 and +91 9310004609</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2024 Commercial Properties. All rights reserved.</p>
+        <p>&copy; 2024 Commercial Properties. All rights reserved. Made by Abhinay</p>
       </div>
     </footer>
   );
