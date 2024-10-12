@@ -5,7 +5,9 @@ import HomeSection from './components/Home/Home'
 import Footer from './components/Footer/Footer'
 
 function App() {
-  
+
+  //useffect -> axios post req 
+  // api/properties/location 
 
   return (
     <>

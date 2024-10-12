@@ -7,14 +7,10 @@ import cors from "cors";
 
 const app = express();
 app.use(cors()); 
-const port = 8000;
+const port = 5000;
 app.use(express.json());
 
 
-// connecting to mongoDB 
-// mongoose.connect(process.env.DB_URI)
-// .then(() => console.log("Connected to MongoDB"))
-// .catch((err) => console.log(err));
 
 const connectToDB = async () => {
   try {
@@ -33,44 +29,48 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/properties", async (req, res) => {
+app.get("/api/properties", async (req, res) => {
   try {
-    const properties = await Property.find(); // Fetches all properties from MongoDB
-    res.json(properties); // Sends the properties as a JSON response
+    console.log(req.query);
+    const page= Number(req.query.page)|| 1;
+    const limit = Number(req.query.limit) || 5;
+    const skip = (page-1 )*limit;
+    const properties = await Property.find({}).skip(skip).limit(limit); // Fetches all properties from MongoDB
+
+    // console.log(properties);
+    res.json(properties);
+     // Sends the properties as a JSON response
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-
-// Saving new properties via POST (if needed, optional)
-// app.post("/properties", async (req, res) => {
-//   try {
-//     const { property_id, property_name, property_type, property_size, property_value, location, year_built, owner_name, owner_email, last_inspection_date } = req.body;
-
-//     const property = new Property({
-//       property_id,
-//       property_name,
-//       property_type,
-//       property_size,
-//       property_value,
-//       location,
-//       year_built,
-//       owner_name,
-//       owner_email,
-//       last_inspection_date
-//     });
-
-//     await property.save(); // Saves the new property in MongoDB
-//     res.send("Property saved!");
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
-
-app.get('/users', (req, res)=>{
-  return res.json(users);
+app.get("/api/properties/add", async(req, res) =>{
+  try{
+    const property= await Property.create({
+      property_id:102,
+      property_name:"abhi",
+      property_address:"tushar ka ghar",
+      property_size:98076.38,
+      property_value:"Pound",
+      location:"17th Floor",
+      year_built:1990,
+      owner_name:"dfdsf",
+      owner_email:"dfdsf@gmail.com",
+      last_inspection_date:"6/7/2020",
+      property_type:"fdfdsf"
+    })
+    res.json({message:'new property added'})
+  }
+  catch(err){
+    res.status(500).json({error: err.message})
+  }
 })
+
+
+// app.post('/api/properties/location'){
+//   const location = req.body.location;
+// }
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

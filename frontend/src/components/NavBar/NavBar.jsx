@@ -2,11 +2,8 @@ import { AiOutlineMenu } from "react-icons/ai";
 import './NavBar.css'; // Add CSS to style the nav
 import logo from '../../assets/LOGO.jpg';
 
-
-
-const NavBar = ({setMenuOpen, menuOpen }) => {
+const NavBar = ({ setMenuOpen, menuOpen }) => {
   return (
-    
     <>
       <nav>
         <NavContent setMenuOpen={setMenuOpen} />
@@ -28,22 +25,22 @@ export const HeaderPhone = ({ menuOpen, setMenuOpen }) => {
 };
 
 const NavContent = ({ setMenuOpen }) => (
-      <>
-      <div className="logo">
-        <img src={logo} alt="logo" height={100} width={100} />
-      </div>
-      <div className="nav-links">
+  <>
+    <div className="logo">
+      <img src={logo} alt="logo" />
+    </div>
+    <div className="nav-links">
       <a onClick={() => setMenuOpen(false)} href="#buy">
         BUY
       </a>
-      <a onClick={() => setMenuOpen(false)} href="#sell"> 
+      <a onClick={() => setMenuOpen(false)} href="#sell">
         SELL
       </a>
       <a onClick={() => setMenuOpen(false)} href="#rent">
         RENT
       </a>
-      </div>
-      </>
+    </div>
+  </>
 );
 
 export default NavBar;
