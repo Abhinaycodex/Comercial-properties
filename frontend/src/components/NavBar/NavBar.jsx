@@ -1,17 +1,22 @@
 import { AiOutlineMenu } from "react-icons/ai";
-import './NavBar.css'; // Add CSS to style the nav
+import { Link, NavLink } from 'react-router-dom';
+import './NavBar.css';
 import logo from '../../assets/LOGO.jpg';
 
 const NavBar = ({ setMenuOpen, menuOpen }) => {
   return (
     <>
-      <nav>
+      <nav className="navbar">
         <NavContent setMenuOpen={setMenuOpen} />
       </nav>
 
+      {/* Mobile menu button */}
       <button className="navBtn" onClick={() => setMenuOpen(!menuOpen)}>
         <AiOutlineMenu />
       </button>
+
+      {/* Mobile navigation */}
+      <HeaderPhone menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
     </>
   );
 };
@@ -25,22 +30,22 @@ export const HeaderPhone = ({ menuOpen, setMenuOpen }) => {
 };
 
 const NavContent = ({ setMenuOpen }) => (
-  <>
+  <div className="nav-content">
     <div className="logo">
-      <img src={logo} alt="logo" />
+      <img src={logo} alt="Company Logo" />
     </div>
     <div className="nav-links">
-      <a onClick={() => setMenuOpen(false)} href="#buy">
+      <Link onClick={() => setMenuOpen(false)} to="/buy">
         BUY
-      </a>
-      <a onClick={() => setMenuOpen(false)} href="#sell">
+      </Link>
+      <Link onClick={() => setMenuOpen(false)} to="/sell">
         SELL
-      </a>
-      <a onClick={() => setMenuOpen(false)} href="#rent">
+      </Link>
+      <NavLink onClick={() => setMenuOpen(false)} to="/rent">
         RENT
-      </a>
+      </NavLink>
     </div>
-  </>
+  </div>
 );
 
 export default NavBar;

@@ -6,14 +6,14 @@ import axios from "axios"; // Import axios for API requests
 const PropertyCard = () => {
   const [properties, setProperties] = useState([]); // Store properties
   const [currentPage, setCurrentPage] = useState(1); // Tracks the current page
-  const limit = 5; // Number of properties per page
+  const limit = 3; // Number of properties per page
 
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [loading, setLoading] = useState(false); // Loading indicator
   const [error, setError] = useState(null); // Error handling
   const [propertyType, setPropertyType] = useState(""); // Property type filter
   const [minPrice, setMinPrice] = useState(0); // Minimum price filter
-  const [maxPrice, setMaxPrice] = useState(1000000); // Maximum price filter
+  const [maxPrice, setMaxPrice] = useState(100000); // Maximum price filter
 
   // Fetch data based on current filters and page
   useEffect(() => {
@@ -37,30 +37,39 @@ const PropertyCard = () => {
     fetchData(); // Call fetch function
   }, [currentPage, limit, searchQuery, propertyType, minPrice, maxPrice]);
 
-  const handlepagechange = ()=>{
-    setCurrentPage(prev=>prev+1)
-    window.scrollTo(0,850);
+
+
+  const handlepagechange = () => {
+    setCurrentPage((prev) => prev + 1);
+    window.scrollTo(0, 850);
+  };
+
+  const handlepagechangeprev = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+      window.scrollTo(0, 850);
+    }
+  };
+
+  const handleChange_contact =()=>{
+    window.open("https://wa.link/9mexid", "_blank"); 
   }
- 
+
   // Handle search input
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-  // Handle property type change
-  const handlePropertyTypeChange = (e) => {
-    setPropertyType(e.target.value);
+    // Update the appropriate state based on the input name
+    if (name === "searchQuery") {
+      setSearchQuery(value);
+    } else if (name === "propertyType") {
+      setPropertyType(value);
+    } else if (name === "minPrice") {
+      setMinPrice(Number(value));
+    } else if (name === "maxPrice") {
+      setMaxPrice(Number(value));
+    }
   };
-
-  // Handle price range changes
-  const handleMinPriceChange = (e) => {
-    setMinPrice(e.target.value);
-  };
-
-  const handleMaxPriceChange = (e) => {
-    setMaxPrice(e.target.value);
-  };
-
 
   return (
     <>
@@ -70,15 +79,21 @@ const PropertyCard = () => {
           <Form.Label>Search by Name</Form.Label>
           <Form.Control
             type="text"
+            name="searchQuery" // Added name attribute
             value={searchQuery}
-            onChange={handleSearchChange}
+            onChange={handleChange}
             placeholder="Search properties..."
           />
         </Form.Group>
 
         <Form.Group controlId="propertyType">
           <Form.Label>Filter by Property Type</Form.Label>
-          <Form.Control as="select" value={propertyType} onChange={handlePropertyTypeChange}>
+          <Form.Control
+            as="select"
+            name="propertyType" // Added name attribute
+            value={propertyType}
+            onChange={handleChange}
+          >
             <option value="">All</option>
             <option value="Residential">Residential</option>
             <option value="Commercial">Commercial</option>
@@ -89,8 +104,9 @@ const PropertyCard = () => {
           <Form.Label>Min Price</Form.Label>
           <Form.Control
             type="number"
+            name="minPrice" // Added name attribute
             value={minPrice}
-            onChange={handleMinPriceChange}
+            onChange={handleChange}
             placeholder="Min Price"
           />
         </Form.Group>
@@ -99,19 +115,23 @@ const PropertyCard = () => {
           <Form.Label>Max Price</Form.Label>
           <Form.Control
             type="number"
+            name="maxPrice" // Added name attribute
             value={maxPrice}
-            onChange={handleMaxPriceChange}
+            onChange={handleChange}
             placeholder="Max Price"
           />
         </Form.Group>
-
         <Button variant="primary" onClick={() => setCurrentPage(1)}>
           Apply Filters
         </Button>
       </Form>
 
       {/* Loading Indicator */}
-      {loading && <Spinner animation="border" role="status"><span className="sr-only">Loading...</span></Spinner>}
+      {loading && (
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      )}
 
       {/* Error Handling */}
       {error && <Alert variant="danger">{error}</Alert>}
@@ -136,11 +156,13 @@ const PropertyCard = () => {
                   <p>Owner: {property.owner_name}</p>
                   <p>
                     Last Inspection Date:{" "}
-                    {new Date(property.last_inspection_date).toLocaleDateString()}
+                    {new Date(
+                      property.last_inspection_date
+                    ).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="contact-section">
-                  <button>Contact No.</button>
+                  <button onClick={handleChange_contact}>Contact No.</button>
                   <p>Monthly Profit: 2 lakh</p>
                 </div>
               </div>
@@ -151,11 +173,10 @@ const PropertyCard = () => {
         )}
       </ListGroup>
 
-      <button onClick={handlepagechange}>
-        NEXT PAGE
-      </button>
-
-     
+      <div className="next_bottom">
+        <button onClick={handlepagechangeprev}>PREV PAGE</button>
+        <button onClick={handlepagechange}>NEXT PAGE</button>
+      </div>
     </>
   );
 };

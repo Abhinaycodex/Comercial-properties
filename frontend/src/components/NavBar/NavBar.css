@@ -1,83 +1,85 @@
-@import url('https://fonts.googleapis.com/css2?family=Gupter:wght@400;500;700&family=Mukta:wght@200;300;400;500;600;700;800&display=swap');
-
-
-@media only screen and (max-width: 600px) {
-  .container {
-    flex-direction: column;
-  }
-}
-  /* NavBar.css */
-
-nav {
+/* General Navbar Styling */
+.navbar {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
+  padding: 10px 20px;
   background-color: #2A209F;
-  color: white;
 }
 
+.nav-content {
+  display: flex;
+  align-items: center;
+}
 
 .logo img {
   position: relative;
   bottom: 3rem;
-  height: 100px;
-  width: 100px;
-  border-radius: 50px;
+  width: 90px;
+  height: auto;
+  border-radius: 4px;
 }
 
-/* For desktop view */
-.nav-links {
-  display: flex;
-  gap: 2rem;
-}
-
+/* Links for desktop */
 .nav-links a {
   color: white;
+  margin-left: 20px;
   text-decoration: none;
-  font-size: 1.2rem;
+  font-size: 18px;
+  transition: color 0.3s;
 }
 
+.nav-links a:hover {
+  color: #FFC107;
+}
+
+/* Mobile Menu Button */
 .navBtn {
-  display: none;
-  background: none;
+  background-color: transparent;
   border: none;
   color: white;
-  font-size: 2rem;
+  font-size: 24px;
   cursor: pointer;
+  display: none; /* Hidden by default on desktop */
 }
 
-/* Mobile view */
+/* Mobile Navigation */
+.navPhone {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 300px;
+  background-color: #2A209F;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.navPhoneComes {
+  transform: translateX(0);
+}
+
+.navPhone .nav-links {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.navPhone .nav-links a {
+  margin: 20px 0;
+  font-size: 24px;
+  color: white;
+}
+
+/* Responsive Design */
 @media screen and (max-width: 768px) {
   .nav-links {
-    display: none;
-  }
-
-  .navPhone {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #2A209F;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transform: translateY(-100%);
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .navPhoneComes {
-    transform: translateY(0);
-  }
-
-  .navPhone a {
-    font-size: 2rem;
-    margin: 1.5rem 0;
+    display: none; /* Hide desktop links */
   }
 
   .navBtn {
-    display: block;
+    display: block; /* Show mobile menu button */
   }
 }

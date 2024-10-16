@@ -1,27 +1,81 @@
 import './Upcoming.css';
-import {projects} from '../../assets/upcoming'
+import { useState, useEffect } from 'react';
+import axios from 'axios'; 
 
 const UpcomingProjects = () => {
+  const [upcoming, setUpcoming] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); 
+  const limit =3;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await axios.get(`http://localhost:5000/api/Upcoming?page=${currentPage}&limit=${limit}`);
+        console.log(response);
+        setUpcoming(response.data); // Set fetched projects
+      } catch (err) {
+        setError(err, "Error fetching upcoming products. Please try again."); // Fix error handling
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  },  [currentPage]); 
+
+  const handlepagechange = () => {
+    setCurrentPage((prev) => prev + 1);
+  };
+
+  const handlepagechangeprev = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
   return (
     <div className="projects-container">
-      <h1>Upcoming Commercial Projects</h1>
       <p>Explore our upcoming projects with high rental revenue potential.</p>
 
-      <div className="projects-list">
-        {projects.map((project) => (
-          <div className="project-card" key={project.id}>
-            <img src={project.image} alt={project.name} className="project-image" />
-            <div className="project-details">
-              <h2>{project.name}</h2>
-              <p><strong>Location:</strong> {project.location}</p>
-              <p><strong>Expected Rent Revenue:</strong> {project.rentRevenue}</p>
-              <p><strong>Completion Date:</strong> {project.completionDate}</p>
-              <p>{project.description}</p>
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : upcoming.length > 0 ? (
+        <div className="projects-list">
+          {upcoming.map((project) => (
+            <div className="project-card" key={project._id}>
+              <img
+                src={project.image || 'https://via.placeholder.com/150'}
+                alt={project.product_name}
+                className="project-image"
+              />
+              <div className="project-details">
+                <h2>{project.product_name}</h2>
+                <p><strong>Price:</strong> ${project.price}</p>
+                <p><strong>Quantity:</strong> {project.quantity}</p>
+                <p><strong>Purchase Date:</strong> {new Date(project.purchase_date).toLocaleDateString()}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+      ) : (
+        <p>No upcoming products available at the moment.</p>
+      )}
+
+      <div className="next_bottom">
+        <button onClick={handlepagechangeprev}>PREV PAGE</button>
+        <button onClick={handlepagechange}>NEXT PAGE</button>
       </div>
+
+
     </div>
+
+    
   );
 };
 

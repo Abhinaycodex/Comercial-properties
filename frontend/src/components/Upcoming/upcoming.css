@@ -1,80 +1,111 @@
-/* Container styling */
+/* Container for all upcoming projects */
 .projects-container {
-    padding: 20px;
-    background-color: #f5f5f5;
-    text-align: center;
-  }
-  
-  .projects-container h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-  }
-  
-  .projects-container p {
-    font-size: 1.2rem;
-    margin-bottom: 40px;
-    color: #555;
-  }
-  
-  /* Project List */
-  .projects-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  /* Individual Project Card */
+  max-width: 1200px; /* Center the container and limit its width */
+  margin: 0 auto; /* Center the container horizontally */
+  padding: 20px;
+  text-align: center;
+  background-color: #f9f9f9; /* Light background for better contrast */
+}
+
+/* Introduction text */
+.projects-container p {
+  font-size: 1.2rem;
+  color: #333; /* Darker color for readability */
+  margin-bottom: 20px;
+}
+
+/* Projects list grid layout */
+.projects-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+  gap: 20px;
+  padding: 10px;
+}
+
+/* Individual project card */
+.project-card {
+  background-color: #fff; /* White background */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  overflow: hidden; /* Ensure image doesn't overflow */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  padding: 20px;
+  text-align: left;
+}
+
+/* Hover effect for project cards */
+.project-card:hover {
+  transform: translateY(-10px); /* Lift the card on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+}
+
+/* Project image styling */
+.project-image {
+  width: 100%; /* Full width inside card */
+  height: 200px; /* Fixed height for uniformity */
+  object-fit: cover; /* Ensure the image fits properly */
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+/* Project details */
+.project-details h2 {
+  font-size: 1.5rem;
+  color: #2c3e50; /* Dark blue/grey color for titles */
+  margin-bottom: 10px;
+}
+
+.project-details p {
+  font-size: 1rem;
+  color: #7f8c8d; /* Lighter grey for the description */
+  margin-bottom: 5px;
+}
+
+/* Strong emphasis on labels */
+.project-details p strong {
+  color: #2980b9; /* Blue color for labels */
+}
+
+/* Loading and error messages */
+.projects-container p {
+  font-size: 1.2rem;
+  color: #e74c3c; /* Red for errors */
+  margin-top: 20px;
+}
+
+/* Responsive behavior for smaller screens */
+@media (max-width: 768px) {
   .project-card {
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-    max-width: 300px;
+    padding: 15px;
   }
-  
-  .project-card:hover {
-    transform: scale(1.05);
-  }
-  
-  /* Project Image */
+
   .project-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+    height: 180px;
   }
-  
-  /* Project Details */
-  .project-details {
-    padding: 20px;
-    text-align: left;
-  }
-  
+
   .project-details h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+    font-size: 1.3rem;
   }
-  
+
   .project-details p {
-    font-size: 1rem;
-    margin-bottom: 8px;
-    color: #333;
+    font-size: 0.9rem;
   }
-  
-  .project-details strong {
-    font-weight: bold;
+}
+
+@media (max-width: 480px) {
+  .project-card {
+    padding: 10px;
   }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .projects-list {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .project-card {
-      max-width: 100%;
-    }
+
+  .project-image {
+    height: 350px;
   }
-  
+
+  .project-details h2 {
+    font-size: 1.1rem;
+  }
+
+  .project-details p {
+    font-size: 0.85rem;
+  }
+}

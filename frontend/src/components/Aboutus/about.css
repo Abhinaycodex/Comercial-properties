@@ -1,0 +1,124 @@
+/* Main container for About Us section */
+.about-container {
+    width: 100%; /* Full width of the screen */
+    padding: 50px 20px;
+    background-color: #f4f7fc;
+    color: #2A209F;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  /* Header styles */
+  .about-header {
+    font-size: 3rem;
+    margin-bottom: 30px;
+    color: #2A209F;
+    font-weight: bold;
+    animation: slideDown 1.2s ease-in-out;
+  }
+  
+  /* Content text styles */
+  .about-content {
+    font-size: 1.3rem;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    color: #34495e;
+    opacity: 0;
+    animation: fadeInContent 1.5s ease-in-out forwards;
+    animation-delay: 0.5s;
+  }
+  
+  /* Highlighted text within content */
+  .about-highlight {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2A209F;
+    opacity: 0;
+    animation: fadeInHighlight 1.8s ease-in-out forwards;
+    animation-delay: 0.8s;
+  }
+  
+  /* Call to action styles */
+  .call-to-action {
+    font-size: 1.4rem;
+    margin-top: 40px;
+    color: #27ae60;
+    font-weight: bold;
+    opacity: 0;
+    animation: fadeInContent 2s ease-in-out forwards;
+    animation-delay: 1.2s;
+  }
+  
+  /* Animation keyframes */
+  
+  /* Fade in animation for the container */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  /* Slide down effect for the header */
+  @keyframes slideDown {
+    0% {
+      transform: translateY(-30px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Fade in animation for content */
+  @keyframes fadeInContent {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Fade in for highlight text */
+  @keyframes fadeInHighlight {
+    0% {
+      opacity: 0;
+      color: #7f8c8d;
+    }
+    100% {
+      opacity: 1;
+      color: #2A209F;
+    }
+  }
+  
+  /* Responsiveness */
+  @media (max-width: 768px) {
+    .about-header {
+      font-size: 2.5rem;
+    }
+    .about-content {
+      font-size: 1.2rem;
+    }
+    .call-to-action {
+      font-size: 1.2rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .about-header {
+      font-size: 2rem;
+    }
+    .about-content {
+      font-size: 1.1rem;
+    }
+    .call-to-action {
+      font-size: 1.1rem;
+    }
+  }
+  

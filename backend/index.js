@@ -3,7 +3,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import Property from "./models/properties.js";
 import cors from "cors";
-
+import Upcoming from "./models/upcoming.js";
 
 const app = express();
 app.use(cors()); 
@@ -29,11 +29,12 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+
 app.get("/api/properties", async (req, res) => {
   try {
     console.log(req.query);
     const page= Number(req.query.page)|| 1;
-    const limit = Number(req.query.limit) || 5;
+    const limit = Number(req.query.limit) || 3;
     const skip = (page-1 )*limit;
     const properties = await Property.find({}).skip(skip).limit(limit); // Fetches all properties from MongoDB
 
@@ -66,6 +67,22 @@ app.get("/api/properties/add", async(req, res) =>{
     res.status(500).json({error: err.message})
   }
 })
+
+
+app.get('/api/Upcoming', async (req, res) => {
+  try {
+    console.log(req.query);
+    const page= Number(req.query.page)|| 1;
+    const limit = Number(req.query.limit) || 3;
+    const skip = (page-1 )*limit;
+    const upcomingProperties = await Upcoming.find({}).skip(skip).limit(limit);
+    res.json(upcomingProperties); 
+  } catch (err) {
+    res.status(500).json({ error: 'Error fetching properties. Please try again.' });
+  }
+});
+
+
 
 
 // app.post('/api/properties/location'){
