@@ -9,13 +9,14 @@ const UpcomingProjects = () => {
   const [currentPage, setCurrentPage] = useState(1); 
   const limit =3;
 
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await axios.get(`http://localhost:5000/api/Upcoming?page=${currentPage}&limit=${limit}`);
+        const response = await axios.get(`http://localhost:5000/api/Upcoming/?page=${currentPage}&limit=${limit}`);
         console.log(response);
         setUpcoming(response.data); // Set fetched projects
       } catch (err) {
@@ -50,7 +51,7 @@ const UpcomingProjects = () => {
           {upcoming.map((project) => (
             <div className="project-card" key={project._id}>
               <img
-                src={project.image || 'https://via.placeholder.com/150'}
+                src={project.image_url || 'https://via.placeholder.com/250'}
                 alt={project.product_name}
                 className="project-image"
               />

@@ -6,11 +6,9 @@ import cors from "cors";
 import Upcoming from "./models/upcoming.js";
 
 const app = express();
-app.use(cors()); 
+app.use(cors());
 const port = 5000;
 app.use(express.json());
-
-
 
 const connectToDB = async () => {
   try {
@@ -24,66 +22,80 @@ const connectToDB = async () => {
 // Call the function to connect to the database
 connectToDB();
 
-
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-
 app.get("/api/properties", async (req, res) => {
   try {
+    const searchquery = req.query.search || '' ;
+    const minPrice = req.query.minPrice || 0 ;
+    const maxPrice = req.query.maxPrice || 1000000000000000;
     console.log(req.query);
-    const page= Number(req.query.page)|| 1;
+    const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 3;
-    const skip = (page-1 )*limit;
-    const properties = await Property.find({}).skip(skip).limit(limit); // Fetches all properties from MongoDB
+    const skip = (page - 1) * limit;
+    const properties = await Property.find({
+      property_name: { $regex: String(searchquery), $options: "i" },
+      property_size: {
+        $gte: minPrice,
+        $lte: maxPrice,
+      },
+    })
+      .skip(skip)
+      .limit(limit); // Fetches all properties from MongoDB
 
     // console.log(properties);
     res.json(properties);
-     // Sends the properties as a JSON response
+    // Sends the properties as a JSON response
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get("/api/properties/add", async(req, res) =>{
-  try{
-    const property= await Property.create({
-      property_id:102,
-      property_name:"abhi",
-      property_address:"tushar ka ghar",
-      property_size:98076.38,
-      property_value:"Pound",
-      location:"17th Floor",
-      year_built:1990,
-      owner_name:"dfdsf",
-      owner_email:"dfdsf@gmail.com",
-      last_inspection_date:"6/7/2020",
-      property_type:"fdfdsf"
-    })
-    res.json({message:'new property added'})
-  }
-  catch(err){
-    res.status(500).json({error: err.message})
-  }
-})
-
-
-app.get('/api/Upcoming', async (req, res) => {
+app.get("/api/properties/add", async (req, res) => {
   try {
-    console.log(req.query);
-    const page= Number(req.query.page)|| 1;
-    const limit = Number(req.query.limit) || 3;
-    const skip = (page-1 )*limit;
-    const upcomingProperties = await Upcoming.find({}).skip(skip).limit(limit);
-    res.json(upcomingProperties); 
+    const property = await Property.create({
+      property_id: 102,
+      property_name: "abhi",
+      property_address: "tushar ka ghar",
+      property_size: 98076.38,
+      property_value: "Pound",
+      location: "17th Floor",
+      year_built: 1990,
+      owner_name: "dfdsf",
+      owner_email: "dfdsf@gmail.com",
+      last_inspection_date: "6/7/2020",
+      property_type: "fdfdsf",
+    });
+    res.json({ message: "new property added" });
   } catch (err) {
-    res.status(500).json({ error: 'Error fetching properties. Please try again.' });
+    res.status(500).json({ error: err.message });
   }
 });
 
+app.get("/api/Upcoming", async (req, res) => {
+  try {
+    console.log(req.query);
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 3;
+    const skip = (page - 1) * limit;
+    const upcomingProperties = await Upcoming.find({}).skip(skip).limit(limit);
+    res.json(upcomingProperties);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error fetching properties. Please try again." });
+  }
+});
 
+let properties = [];
 
+app.post("/properties", (req, res) => {
+  const newProperty = req.body;
+  properties.push(newProperty);
+  res.status(201).json({ message: "Property added successfully!" });
+});
 
 // app.post('/api/properties/location'){
 //   const location = req.body.location;

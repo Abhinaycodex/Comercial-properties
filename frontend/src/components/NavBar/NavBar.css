@@ -14,7 +14,6 @@
 }
 
 .logo img {
-  position: relative;
   bottom: 3rem;
   width: 90px;
   height: auto;
@@ -28,6 +27,8 @@
   text-decoration: none;
   font-size: 18px;
   transition: color 0.3s;
+  align-items: flex-end;
+  
 }
 
 .nav-links a:hover {
@@ -74,9 +75,9 @@
 }
 
 /* Responsive Design */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 100px) {
   .nav-links {
-    display: none; /* Hide desktop links */
+    display:flex; /* Hide desktop links */
   }
 
   .navBtn {

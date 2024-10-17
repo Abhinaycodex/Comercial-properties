@@ -20,6 +20,10 @@ const upcomingSchema = new mongoose.Schema({
   quantity: {
     type: Number,
     required: true,
+  },
+  image_url :{
+    type: String,
+    required: true,
   }
 },{ collection: 'upcoming' });
 

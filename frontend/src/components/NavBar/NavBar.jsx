@@ -24,13 +24,14 @@ const NavBar = ({ setMenuOpen, menuOpen }) => {
 export const HeaderPhone = ({ menuOpen, setMenuOpen }) => {
   return (
     <div className={`navPhone ${menuOpen ? "navPhoneComes" : ""}`}>
+      
       <NavContent setMenuOpen={setMenuOpen} />
     </div>
   );
 };
 
 const NavContent = ({ setMenuOpen }) => (
-  <div className="nav-content">
+  <>
     <div className="logo">
       <img src={logo} alt="Company Logo" />
     </div>
@@ -45,7 +46,7 @@ const NavContent = ({ setMenuOpen }) => (
         RENT
       </NavLink>
     </div>
-  </div>
+  </>
 );
 
 export default NavBar;

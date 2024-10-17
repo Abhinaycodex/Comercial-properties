@@ -25,7 +25,6 @@ const PropertyCard = () => {
         const response = await axios.get(
           `http://localhost:5000/api/properties?page=${currentPage}&limit=${limit}&search=${searchQuery}&propertyType=${propertyType}&minPrice=${minPrice}&maxPrice=${maxPrice}`
         );
-        console.log(response);
         setProperties(response.data); // Set properties data
       } catch (err) {
         setError(err, "Error fetching properties. Please try again."); // Handle error
@@ -37,29 +36,21 @@ const PropertyCard = () => {
     fetchData(); // Call fetch function
   }, [currentPage, limit, searchQuery, propertyType, minPrice, maxPrice]);
 
-
-
-  const handlepagechange = () => {
-    setCurrentPage((prev) => prev + 1);
+  const handlePageChange = (direction) => {
+    if (direction === "next") {
+      setCurrentPage((prev) => prev + 1);
+    } else if (direction === "prev" && currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
     window.scrollTo(0, 850);
   };
 
-  const handlepagechangeprev = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-      window.scrollTo(0, 850);
-    }
+  const handleContact = () => {
+    window.open("https://wa.link/9mexid", "_blank");
   };
 
-  const handleChange_contact =()=>{
-    window.open("https://wa.link/9mexid", "_blank"); 
-  }
-
-  // Handle search input
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Update the appropriate state based on the input name
     if (name === "searchQuery") {
       setSearchQuery(value);
     } else if (name === "propertyType") {
@@ -79,7 +70,7 @@ const PropertyCard = () => {
           <Form.Label>Search by Name</Form.Label>
           <Form.Control
             type="text"
-            name="searchQuery" // Added name attribute
+            name="searchQuery"
             value={searchQuery}
             onChange={handleChange}
             placeholder="Search properties..."
@@ -90,7 +81,7 @@ const PropertyCard = () => {
           <Form.Label>Filter by Property Type</Form.Label>
           <Form.Control
             as="select"
-            name="propertyType" // Added name attribute
+            name="propertyType"
             value={propertyType}
             onChange={handleChange}
           >
@@ -104,8 +95,8 @@ const PropertyCard = () => {
           <Form.Label>Min Price</Form.Label>
           <Form.Control
             type="number"
-            name="minPrice" // Added name attribute
-            value={minPrice}
+            name="minPrice"
+            // value={minPrice}
             onChange={handleChange}
             placeholder="Min Price"
           />
@@ -115,8 +106,8 @@ const PropertyCard = () => {
           <Form.Label>Max Price</Form.Label>
           <Form.Control
             type="number"
-            name="maxPrice" // Added name attribute
-            value={maxPrice}
+            name="maxPrice"
+            // value={maxPrice}
             onChange={handleChange}
             placeholder="Max Price"
           />
@@ -137,14 +128,14 @@ const PropertyCard = () => {
       {error && <Alert variant="danger">{error}</Alert>}
 
       {/* List of Properties */}
-      <ListGroup>
+      <ListGroup className="items">
         {properties && properties.length > 0 ? (
           properties.map((property) => (
-            <ListGroup.Item className="property-card" key={property._id}>
+            <ListGroup.Item key={property._id} className="property-card">
               <div className="property-card">
                 <img
                   src={property.thumbnail || "property-thumbnail.jpg"} // Fallback to placeholder
-                  alt="Office Space"
+                  alt={property.property_name}
                   className="property-thumbnail"
                 />
                 <div className="property-details">
@@ -162,7 +153,7 @@ const PropertyCard = () => {
                   </p>
                 </div>
                 <div className="contact-section">
-                  <button onClick={handleChange_contact}>Contact No.</button>
+                  <button onClick={handleContact}>Contact No.</button>
                   <p>Monthly Profit: 2 lakh</p>
                 </div>
               </div>
@@ -173,9 +164,10 @@ const PropertyCard = () => {
         )}
       </ListGroup>
 
+      {/* Pagination Section */}
       <div className="next_bottom">
-        <button onClick={handlepagechangeprev}>PREV PAGE</button>
-        <button onClick={handlepagechange}>NEXT PAGE</button>
+        <button onClick={() => handlePageChange("prev")}>PREV PAGE</button>
+        <button onClick={() => handlePageChange("next")}>NEXT PAGE</button>
       </div>
     </>
   );
