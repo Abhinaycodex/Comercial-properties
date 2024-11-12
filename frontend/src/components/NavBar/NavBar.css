@@ -6,6 +6,7 @@
   align-items: center;
   padding: 10px 20px;
   background-color: #2A209F;
+  position:sticky;
 }
 
 .nav-content {
@@ -15,7 +16,7 @@
 
 .logo img {
   bottom: 3rem;
-  width: 90px;
+  width: 50px;
   height: auto;
   border-radius: 4px;
 }

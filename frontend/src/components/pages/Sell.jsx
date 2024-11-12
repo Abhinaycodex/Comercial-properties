@@ -1,162 +1,217 @@
-// src/components/SellRentForm.js
-import  { useState } from "react";
-import {
-  TextField,
-  Button,
-  Container,
-  Grid,
-  MenuItem,
-  Typography,
-  Alert,
-} from "@mui/material";
+import { useState } from "react";
 import axios from "axios";
-import NavBar from "../NavBar/NavBar";
+import "./sell.css";
 import Footer from "../Footer/Footer";
+import NavBar from "../NavBar/NavBar";
 
-
-const SellPage = () => {
-  const [formData, setFormData] = useState({
-    propertyName: "",
-    propertyType: "Sell", // Default to "Sell"
-    price: "",
-    size: "",
+const Sell = () => {
+  const [propertyData, setPropertyData] = useState({
+    property_id: "",
+    property_name: "",
+    property_type: "",
+    property_size: "",
+    property_value: "",
     location: "",
-    description: "",
+    year_built: "",
+    owner_name: "",
+    owner_email: "",
+    last_inspection_date: "",
+    thumbnail: null,
+    property_image: null,
   });
 
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setPropertyData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
+    }));
   };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setPropertyData((prevData) => ({
+      ...prevData,
+      [name]: files[0],
+    }));
+  };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData();
+  //   console.log(propertyData);
+
+  //   // Append all data correctly
+  //   for (let key in propertyData) {
+  //     if (propertyData[key] !== null) {
+  //       formData.append(key, propertyData[key]);
+  //     }
+  //   }
+
+  //   try {
+  //     const response = await axios.post('http://localhost:5000/api/properties/add', propertyData, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //       },
+  //     });
+  //     setMessage(response.data.message);
+
+  //     // Reset form on successful submission
+  //     setPropertyData({
+  //       property_id: '',
+  //       property_name: '',
+  //       property_type: '',
+  //       property_size: '',
+  //       property_value: '',
+  //       location: '',
+  //       year_built: '',
+  //       owner_name: '',
+  //       owner_email: '',
+  //       last_inspection_date: '',
+  //       thumbnail: null,
+  //       property_image: null,
+  //     });
+
+  //     // Reset file input elements
+  //     if (document.getElementById('thumbnail')) {
+  //       document.getElementById('thumbnail').value = '';
+  //     }
+  //     if (document.getElementById('property_image')) {
+  //       document.getElementById('property_image').value = '';
+  //     }
+  //   } catch (error) {
+  //     setMessage('Error adding property: ' + (error.response?.data?.message || error.message));
+  //   }
+  // };
+
+  const handleSubmit = async (e) => {
+    console.log(propertyData);
+    e.preventDefault();
     try {
-      const response = await axios.post("https://api.example.com/properties", formData);
-      if (response.status === 200 || response.status === 201) {
-        setSuccessMessage("Property listed successfully!");
-        setFormData({
-          propertyName: "",
-          propertyType: "Sell",
-          price: "",
-          size: "",
-          location: "",
-          description: "",
-        });
-      }
+      const response = await axios.post(
+        "http://localhost:5000/api/properties/add",
+        propertyData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response);
     } catch (error) {
-      setErrorMessage(error, "Failed to list the property. Please try again.");
+      console.log(error);
     }
   };
 
   return (
-    <>
-    <NavBar />
-    <Container maxWidth="sm" sx={{ marginTop: 4 }}>
-      <Typography variant="h4" align="center" gutterBottom>
-        List Your Property
-      </Typography>
-
-      <form onSubmit={handleSubmit}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Property Name"
-              name="propertyName"
-              value={formData.propertyName}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              select
-              fullWidth
-              label="Property Type"
-              name="propertyType"
-              value={formData.propertyType}
-              onChange={handleChange}
-              required
-            >
-              <MenuItem value="Sell">Sell</MenuItem>
-              <MenuItem value="Rent">Rent</MenuItem>
-            </TextField>
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Price (in $)"
-              name="price"
-              type="number"
-              value={formData.price}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Size (in sqft)"
-              name="size"
-              type="number"
-              value={formData.size}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Location"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              multiline
-              rows={4}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Button variant="contained" color="primary" type="submit" fullWidth>
-              Submit Property
-            </Button>
-          </Grid>
-
-          <Grid item xs={12}>
-            {successMessage && <Alert severity="success">{successMessage}</Alert>}
-            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-          </Grid>
-        </Grid>
+    <div className="sell-property-container">
+      <NavBar />
+      <h2>Sell Your Property</h2>
+      <form onSubmit={handleSubmit} className="sell-form">
+        <input
+          type="number"
+          name="property_id"
+          placeholder="Property ID"
+          value={propertyData.property_id}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="property_name"
+          placeholder="Property Name"
+          value={propertyData.property_name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="property_type"
+          placeholder="Property Type"
+          value={propertyData.property_type}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="property_size"
+          placeholder="Property Size (sqft)"
+          value={propertyData.property_size}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="property_value"
+          placeholder="Property Value ($)"
+          value={propertyData.property_value}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="location"
+          placeholder="Location"
+          value={propertyData.location}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="number"
+          name="year_built"
+          placeholder="Year Built"
+          value={propertyData.year_built}
+          onChange={handleChange}
+          min="1000"
+          max={new Date().getFullYear()}
+          required
+        />
+        <input
+          type="text"
+          name="owner_name"
+          placeholder="Owner Name"
+          value={propertyData.owner_name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="email"
+          name="owner_email"
+          placeholder="Owner Email"
+          value={propertyData.owner_email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="date"
+          name="last_inspection_date"
+          value={propertyData.last_inspection_date}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="file"
+          id="thumbnail"
+          name="thumbnail"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+        <input
+          type="file"
+          id="property_image"
+          name="property_image"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+        <button type="submit">Add Property</button>
       </form>
-    </Container>
-    <Footer />
-    </>
+      {message && <p className="message">{message}</p>}
+      <Footer />
+    </div>
   );
 };
 
-export default SellPage;
+export default Sell;

@@ -15,9 +15,9 @@ const router =createBrowserRouter(
     <Route>
       <Route path="/" element={<Layout />} />
       <Route path="BUY" element={<BuyPage />} />
+      <Route path="BUY/:property_id" element={<BuyPage />} />
       <Route path="SELL" element={<SellPage />} />
       <Route path="RENT" element={<RentPage/>} />
-      
       
     </Route>
   )

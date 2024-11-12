@@ -111,3 +111,8 @@
     font-size: 0.85rem;
   }
 }
+
+.next_bottom button{
+  margin-bottom: 20px;
+  border-radius: 25px;
+}

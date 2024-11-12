@@ -1,7 +1,7 @@
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link, NavLink } from 'react-router-dom';
 import './NavBar.css';
-import logo from '../../assets/LOGO.jpg';
+import  logo from '../../assets/CP.jpg'
 
 const NavBar = ({ setMenuOpen, menuOpen }) => {
   return (
@@ -15,7 +15,7 @@ const NavBar = ({ setMenuOpen, menuOpen }) => {
         <AiOutlineMenu />
       </button>
 
-      {/* Mobile navigation */}
+      {/* Mobile navigation */} 
       <HeaderPhone menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
     </>
   );
@@ -32,10 +32,13 @@ export const HeaderPhone = ({ menuOpen, setMenuOpen }) => {
 
 const NavContent = ({ setMenuOpen }) => (
   <>
-    <div className="logo">
-      <img src={logo} alt="Company Logo" />
-    </div>
+    <a  href="/" className="logo">
+      <img src={logo} alt="Company Logo"  />
+    </a>
     <div className="nav-links">
+      <Link onClick={() => setMenuOpen(false)} to="/">
+        HOME
+      </Link>
       <Link onClick={() => setMenuOpen(false)} to="/buy">
         BUY
       </Link>

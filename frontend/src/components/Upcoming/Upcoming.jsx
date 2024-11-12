@@ -20,7 +20,7 @@ const UpcomingProjects = () => {
         console.log(response);
         setUpcoming(response.data); // Set fetched projects
       } catch (err) {
-        setError(err, "Error fetching upcoming products. Please try again."); // Fix error handling
+        setError(err.response?.data?.message || "Error fetching upcoming products. Please try again.");
       } finally {
         setLoading(false);
       }
