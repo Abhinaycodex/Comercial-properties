@@ -38,71 +38,50 @@ const Sell = () => {
     }));
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const formData = new FormData();
-  //   console.log(propertyData);
-
-  //   // Append all data correctly
-  //   for (let key in propertyData) {
-  //     if (propertyData[key] !== null) {
-  //       formData.append(key, propertyData[key]);
-  //     }
-  //   }
-
-  //   try {
-  //     const response = await axios.post('http://localhost:5000/api/properties/add', propertyData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data',
-  //       },
-  //     });
-  //     setMessage(response.data.message);
-
-  //     // Reset form on successful submission
-  //     setPropertyData({
-  //       property_id: '',
-  //       property_name: '',
-  //       property_type: '',
-  //       property_size: '',
-  //       property_value: '',
-  //       location: '',
-  //       year_built: '',
-  //       owner_name: '',
-  //       owner_email: '',
-  //       last_inspection_date: '',
-  //       thumbnail: null,
-  //       property_image: null,
-  //     });
-
-  //     // Reset file input elements
-  //     if (document.getElementById('thumbnail')) {
-  //       document.getElementById('thumbnail').value = '';
-  //     }
-  //     if (document.getElementById('property_image')) {
-  //       document.getElementById('property_image').value = '';
-  //     }
-  //   } catch (error) {
-  //     setMessage('Error adding property: ' + (error.response?.data?.message || error.message));
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
-    console.log(propertyData);
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/properties/add",
-        propertyData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    const formData = new FormData();
 
-      console.log(response);
+    // Append all data correctly
+    for (let key in propertyData) {
+      if (propertyData[key] !== null) {
+        formData.append(key, propertyData[key]);
+      }
+    }
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/properties/add', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      setMessage(response.data.message);
+
+      // Reset form on successful submission
+      setPropertyData({
+        property_id: '',
+        property_name: '',  
+        property_type: '',
+        property_size: '',
+        property_value: '',
+        location: '',
+        year_built: '',
+        owner_name: '',
+        owner_email: '',
+        last_inspection_date: '',
+        thumbnail: null,
+        property_image: null,
+      });
+
+      // Reset file input elements
+      if (document.getElementById('thumbnail')) {
+        document.getElementById('thumbnail').value = '';
+      }
+      if (document.getElementById('property_image')) {
+        document.getElementById('property_image').value = '';
+      }
     } catch (error) {
-      console.log(error);
+      setMessage('Error adding property: ' + (error.response?.data?.message || error.message));
     }
   };
 
@@ -187,6 +166,7 @@ const Sell = () => {
         />
         <input
           type="date"
+          placeholder="last date of visit"
           name="last_inspection_date"
           value={propertyData.last_inspection_date}
           onChange={handleChange}
@@ -206,6 +186,7 @@ const Sell = () => {
           accept="image/*"
           onChange={handleFileChange}
         />
+
         <button type="submit">Add Property</button>
       </form>
       {message && <p className="message">{message}</p>}

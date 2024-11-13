@@ -39,11 +39,10 @@ const propertySchema = new mongoose.Schema({
   owner_email: {
     type: String,
     required: true,
-    match: [/.+\@.+\..+/, 'Please enter a valid email address'], // Email validation
+    match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/]
   },
   last_inspection_date: {
     type: Date,
-    required: true,
   },
   thumbnail: {
     type: String,

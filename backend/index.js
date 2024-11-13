@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import Property from "./models/properties.js";
 import cors from "cors";
 import Upcoming from "./models/upcoming.js";
-// import multer from "multer"; // Import multer for file uploads
+import multer from "multer"; // Import multer for file uploads
 
 const app = express();
 app.use(cors());
@@ -13,16 +13,16 @@ app.use(express.urlencoded({ extended: true })); // Parses incoming URL-encoded 
 
 const port = process.env.PORT || 5000;
 
-// // Multer configuration for handling file uploads
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "uploads/"); // Specify the directory where files will be stored
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, Date.now() + "-" + file.originalname); // Unique filename generation
-//   },
-// });
-// const upload = multer({ storage: storage }); // Define 'upload' middleware with multer configuration
+// Multer configuration for handling file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Specify the directory where files will be stored
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname); // Unique filename generation
+  },
+});
+const upload = multer({ storage: storage }); // Define 'upload' middleware with multer configuration
 
 const connectToDB = async () => {
   try {
@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
 });
 
 // Get properties with search, price range, and pagination
-app.get("/api/properties", async (req, res) => {
+app.get("/api/properties" , async (req, res) => {
   try {
     const searchQuery = req.query.search || "";
     const minPrice = Number(req.query.minPrice) || 0;
@@ -66,7 +66,7 @@ app.get("/api/properties", async (req, res) => {
 });
 
 // Add property with single image upload
-app.post("/api/properties/add"), async (req, res) => {
+app.post("/api/properties/add", async (req, res) => {
   console.log("Received Data:", req.body);
   console.log("Received File:", req.file);
   try {
@@ -84,7 +84,9 @@ app.post("/api/properties/add"), async (req, res) => {
       property_type,
     } = req.body;
 
-    const propertyImage = req.file ? req.file.path : null;
+  
+    const thumbnailPath = req.files?.thumbnail ? req.files.thumbnail[0].path : null;
+    const propertyImagePath = req.files?.property_image ? req.files.property_image[0].path : null;
 
     // Using create() for inserting a single document
     const property = await Property.create({
@@ -99,7 +101,8 @@ app.post("/api/properties/add"), async (req, res) => {
       owner_email,
       last_inspection_date,
       property_type,
-      propertyImage,
+      thumbnail:thumbnailPath,
+      propertyImage:propertyImagePath,
     });
 
     res.status(201).json({ message: "New property added successfully", property });
@@ -107,7 +110,7 @@ app.post("/api/properties/add"), async (req, res) => {
     console.error("Error adding property:", err);
     res.status(500).json({ error: err.message });
   }
-};
+});
 
 // Get upcoming properties with pagination
 app.get("/api/upcoming", async (req, res) => {
