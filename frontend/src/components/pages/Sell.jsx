@@ -34,7 +34,7 @@ const Sell = () => {
     const { name, files } = e.target;
     setPropertyData((prevData) => ({
       ...prevData,
-      [name]: files[0],
+      [name]: files[0], // Assign the first selected file
     }));
   };
 
@@ -42,7 +42,7 @@ const Sell = () => {
     e.preventDefault();
     const formData = new FormData();
 
-    // Append all data correctly
+    // Append all fields and files to formData
     for (let key in propertyData) {
       if (propertyData[key] !== null) {
         formData.append(key, propertyData[key]);
@@ -50,17 +50,13 @@ const Sell = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/properties/add', formData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await axios.post('http://localhost:5000/api/properties/add', formData);
       setMessage(response.data.message);
 
-      // Reset form on successful submission
+      // Reset form data on successful submission
       setPropertyData({
         property_id: '',
-        property_name: '',  
+        property_name: '',
         property_type: '',
         property_size: '',
         property_value: '',
@@ -81,7 +77,7 @@ const Sell = () => {
         document.getElementById('property_image').value = '';
       }
     } catch (error) {
-      setMessage('Error adding property: ' + (error.response?.data?.message || error.message));
+      setMessage('Error adding property: ' + (error.response?.data?.error || error.message));
     }
   };
 
@@ -166,7 +162,6 @@ const Sell = () => {
         />
         <input
           type="date"
-          placeholder="last date of visit"
           name="last_inspection_date"
           value={propertyData.last_inspection_date}
           onChange={handleChange}

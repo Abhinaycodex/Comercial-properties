@@ -46,7 +46,7 @@ const PropertyCard = () => {
     setCurrentPage((prev) =>
       direction === "next" ? prev + 1 : prev > 1 ? prev - 1 : 1
     );
-    window.scrollTo(0, 850);
+    window.scrollTo();
   };
 
   const handleContact = () => {
@@ -92,8 +92,8 @@ const PropertyCard = () => {
           <Form.Label>Filter by Property Type</Form.Label>
           <Form.Control
             as="select"
-            name="propertyType"
-            value={propertyType}
+            name="location"
+            value={location}
             onChange={handleChange}
           >
             <option value="">All</option>
@@ -144,7 +144,7 @@ const PropertyCard = () => {
       <ListGroup className="items">
         {properties.length > 0 ? (
           properties.map((property) => (
-            <ListGroup.Item key={property._id} className="property-card">
+            <ListGroup.Item key={property._id} className="property-card" >
               <Link to={`/BUY/${property._id}`} target="_blank">
                 <img
                   src={property.thumbnail || "property-thumbnail.jpg"}

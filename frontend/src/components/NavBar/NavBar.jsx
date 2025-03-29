@@ -48,6 +48,11 @@ const NavContent = ({ setMenuOpen }) => (
       <NavLink onClick={() => setMenuOpen(false)} to="/rent">
         RENT
       </NavLink>
+      <NavLink onClick={() => setMenuOpen(false)} to="/Register">
+        LOGIN
+      </NavLink>
+      
+
     </div>
   </>
 );
