@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import Property from "./models/properties.js";
 import cors from "cors";
 import Upcoming from "./models/upcoming.js";
+import User from "./models/user.js";
 import multer from "multer"; // Import multer for file uploads
 
 const app = express();
@@ -16,12 +17,13 @@ const port = process.env.PORT || 5000;
 // Multer configuration for handling file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Specify the directory where files will be stored
+    cb(null, "./uploads/"); // Specify the directory where files will be stored
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname); // Unique filename generation
   },
 });
+
 const upload = multer({ storage: storage }); // Define 'upload' middleware with multer configuration
 
 const connectToDB = async () => {
@@ -42,7 +44,7 @@ app.get("/", (req, res) => {
 });
 
 // Get properties with search, price range, and pagination
-app.get("/api/properties" , async (req, res) => {
+app.get("/api/properties", async (req, res) => {
   try {
     const searchQuery = req.query.search || "";
     const minPrice = Number(req.query.minPrice) || 0;
@@ -61,56 +63,71 @@ app.get("/api/properties" , async (req, res) => {
     res.json(properties);
   } catch (err) {
     console.error("Error fetching properties:", err);
-    res.status(500).json({ error: "Error fetching properties. Please try again." });
+    res
+      .status(500)
+      .json({ error: "Error fetching properties. Please try again." });
   }
 });
 
-// Add property with single image upload
-app.post("/api/properties/add", async (req, res) => {
-  console.log("Received Data:", req.body);
-  console.log("Received File:", req.file);
-  try {
-    const {
-      property_id,
-      property_name,
-      property_address,
-      property_size,
-      property_value,
-      location,
-      year_built,
-      owner_name,
-      owner_email,
-      last_inspection_date,
-      property_type,
-    } = req.body;
+// Add property with file uploads (e.g., thumbnail and property_image)
+app.post(
+  "/api/properties/add",
+  upload.fields([
+    { name: "thumbnail", maxCount: 1 },
+    { name: "property_image", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    console.log("Received Data:", req.body);
+    console.log("Received Files:", req.files);
+    try {
+      const {
+        property_id,
+        property_name,
+        property_address,
+        property_size,
+        property_value,
+        location,
+        year_built,
+        owner_name,
+        owner_email,
+        last_inspection_date,
+        property_type,
+      } = req.body;
 
-  
-    const thumbnailPath = req.files?.thumbnail ? req.files.thumbnail[0].path : null;
-    const propertyImagePath = req.files?.property_image ? req.files.property_image[0].path : null;
+      // Access uploaded file paths
+      const thumbnailPath = req.files?.thumbnail
+        ? req.files.thumbnail[0].path
+        : null;
+      const propertyImagePath = req.files?.property_image
+        ? req.files.property_image[0].path
+        : null;
 
-    // Using create() for inserting a single document
-    const property = await Property.create({
-      property_id,
-      property_name,
-      property_address,
-      property_size,
-      property_value,
-      location,
-      year_built,
-      owner_name,
-      owner_email,
-      last_inspection_date,
-      property_type,
-      thumbnail:thumbnailPath,
-      propertyImage:propertyImagePath,
-    });
+      // Create new property entry
+      const property = await Property.create({
+        property_id,
+        property_name,
+        property_address,
+        property_size,
+        property_value,
+        location,
+        year_built,
+        owner_name,
+        owner_email,
+        last_inspection_date,
+        property_type,
+        thumbnail: thumbnailPath,
+        propertyImage: propertyImagePath,
+      });
 
-    res.status(201).json({ message: "New property added successfully", property });
-  } catch (err) {
-    console.error("Error adding property:", err);
-    res.status(500).json({ error: err.message });
+      res
+        .status(201)
+        .json({ message: "property added successfully", property });
+    } catch (err) {
+      console.error("Error adding property:", err);
+      res.status(500).json({ error: err.message });
+    }
   }
-});
+);
 
 // Get upcoming properties with pagination
 app.get("/api/upcoming", async (req, res) => {
@@ -123,7 +140,9 @@ app.get("/api/upcoming", async (req, res) => {
     res.json(upcomingProperties);
   } catch (err) {
     console.error("Error fetching upcoming properties:", err);
-    res.status(500).json({ error: "Error fetching properties. Please try again." });
+    res
+      .status(500)
+      .json({ error: "Error fetching properties. Please try again." });
   }
 });
 
@@ -140,11 +159,44 @@ app.get("/api/properties/:property_id", async (req, res) => {
     res.json(property);
   } catch (err) {
     console.error("Error fetching property:", err);
-    res.status(500).json({ error: "Error fetching property. Please try again." });
+    res
+      .status(500)
+      .json({ error: "Error fetching property. Please try again." });
+  }
+});
+
+app.post("/api/register", async (req, res) => {
+  try {
+    // Destructure according to the schema
+    const { user_name, email, password } = req.body;
+
+    //email logic
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ msg: "User with this email already exists." });
+    }
+
+    // Create a new user instance
+    const user = new User({ user_name, email, password });
+
+    // Save the user to the database
+    await user.save();
+
+    res
+      .status(200)
+      .json({
+        msg: "User registered successfully",
+        token: await user.generateToken(),
+        user_id: user._id.toString(),
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
- 
