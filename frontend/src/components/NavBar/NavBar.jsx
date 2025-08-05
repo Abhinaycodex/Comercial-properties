@@ -3,52 +3,50 @@ import { Link, NavLink } from 'react-router-dom';
 import './NavBar.css';
 import  logo from '../../assets/CP.jpg'
 
-const NavBar = ({ setMenuOpen, menuOpen }) => {
+const NavBar = () => {
   return (
     <>
       <nav className="navbar">
-        <NavContent setMenuOpen={setMenuOpen} />
+        <NavContent />
       </nav>
 
       {/* Mobile menu button */}
-      <button className="navBtn" onClick={() => setMenuOpen(!menuOpen)}>
+      <button className="navBtn" >
         <AiOutlineMenu />
       </button>
 
-      {/* Mobile navigation */} 
-      <HeaderPhone menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      
     </>
   );
 };
 
-export const HeaderPhone = ({ menuOpen, setMenuOpen }) => {
+export const HeaderPhone = () => {
   return (
-    <div className={`navPhone ${menuOpen ? "navPhoneComes" : ""}`}>
-      
-      <NavContent setMenuOpen={setMenuOpen} />
+    <div className="header-phone">
+      <NavContent />
     </div>
   );
 };
 
-const NavContent = ({ setMenuOpen }) => (
+const NavContent = () => (
   <>
     <a  href="/" className="logo">
       <img src={logo} alt="Company Logo"  />
     </a>
     <div className="nav-links">
-      <Link onClick={() => setMenuOpen(false)} to="/">
+      <Link  to="/">
         HOME
       </Link>
-      <Link onClick={() => setMenuOpen(false)} to="/buy">
+      <Link  to="/buy">
         BUY
       </Link>
-      <Link onClick={() => setMenuOpen(false)} to="/sell">
+      <Link  to="/sell">
         SELL
       </Link>
-      <NavLink onClick={() => setMenuOpen(false)} to="/rent">
+      <NavLink  to="/rent">
         RENT
       </NavLink>
-      <NavLink onClick={() => setMenuOpen(false)} to="/Register">
+      <NavLink  to="/Register">
         LOGIN
       </NavLink>
       

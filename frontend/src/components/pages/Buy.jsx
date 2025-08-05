@@ -7,22 +7,20 @@ import Footer from '../Footer/Footer';
 import PropertyCard from '../Property/PropertyCard';
 
 const BuyPage = () => {
-  const { property_id } = useParams(); // Access the dynamic route parameter
+  const { property_id } = useParams();
   const [property, setProperty] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPropertyDetails = async () => {
-      setLoading(true); // Start loading indicator
-      setError(null);   // Clear any previous errors
+      setLoading(true);
+      setError(null);
 
       try {
-        // Make the Axios request to your dynamic route
         const response = await axios.get(`http://localhost:5000/api/properties/?${property_id}`);
-        setProperty(response.data); // Set the property data
+        setProperty(response.data);
       } catch (err) {
-        // Handle errors appropriately
         const errorMessage = err.response?.data?.error || "Error fetching property details.";
         setError(errorMessage);
       } finally {
@@ -31,7 +29,7 @@ const BuyPage = () => {
     };
 
     if (property_id) {
-      fetchPropertyDetails(); // Fetch property data when property_id is available
+      fetchPropertyDetails(); 
     }
   }, [property_id]);
 

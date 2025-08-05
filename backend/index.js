@@ -9,7 +9,7 @@ import multer from "multer"; // Import multer for file uploads
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // Parses incoming JSON requests
+app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); // Parses incoming URL-encoded data
 
 const port = process.env.PORT || 5000;
@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage }); // Define 'upload' middleware with multer configuration
+const upload = multer({ storage: storage }); 
 
 const connectToDB = async () => {
   try {
@@ -40,7 +40,7 @@ const connectToDB = async () => {
 connectToDB();
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello World this is working fine!");
 });
 
 // Get properties with search, price range, and pagination
@@ -52,6 +52,11 @@ app.get("/api/properties", async (req, res) => {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 3;
     const skip = (page - 1) * limit;
+
+    // Validate price range
+    if (minPrice < 0 || maxPrice < 0 || minPrice > maxPrice) {
+      return res.status(400).json({ error: "Invalid price range" });
+    }
 
     const properties = await Property.find({
       property_name: { $regex: searchQuery, $options: "i" },

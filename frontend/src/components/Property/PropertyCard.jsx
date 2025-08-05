@@ -1,46 +1,45 @@
 import { useState, useEffect } from "react";
-import "./PropertyCard.css"; // Add CSS for card styling
+import "./PropertyCard.css"; 
 import { ListGroup, Form, Button, Spinner, Alert } from "react-bootstrap";
-import axios from "axios"; // Import axios for API requests
+import axios from "axios"; 
 import { Link } from "react-router-dom";
 
 const PropertyCard = () => {
-  const [properties, setProperties] = useState([]); // Store properties
-  const [currentPage, setCurrentPage] = useState(1); // Tracks the current page
+  const [properties, setProperties] = useState([]); 
+  const [currentPage, setCurrentPage] = useState(1); 
   const limit = 3; // Number of properties per page
 
-  const [searchQuery, setSearchQuery] = useState(""); // Search query state
-  const [loading, setLoading] = useState(false); // Loading indicator
-  const [error, setError] = useState(null); // Error handling
-  const [propertyType, setPropertyType] = useState(""); // Property type filter
-  const [minPrice, setMinPrice] = useState(0); // Minimum price filter
-  const [maxPrice, setMaxPrice] = useState(10000); // Maximum price filter
-
-  // Fetch data based on current filters and page
+  const [searchQuery, setSearchQuery] = useState(""); 
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null); 
+  const [propertyType, setPropertyType] = useState(""); 
+  const [minPrice, setMinPrice] = useState(0); 
+  const [maxPrice, setMaxPrice] = useState(10000); 
+ 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Show loading indicator
-      setError(null); // Reset error
+      setLoading(true); 
+      setError(null); 
 
       try {
         const response = await axios.get(
           `http://localhost:5000/api/properties?&page=${currentPage}&limit=${limit}&search=${searchQuery}&propertyType=${propertyType}&minPrice=${minPrice}&maxPrice=${maxPrice}`
         );
-        setProperties(response.data); // Set properties data
+        setProperties(response.data); 
       } catch (err) {
-        // If the error response has data and message, use that. Otherwise, fallback to a generic message.
         const errorMessage =
           err.response?.data?.message ||
           err.message ||
           "Error fetching properties. Please try again.";
-        setError(errorMessage); // Set error to a string message, not an object
+        setError(errorMessage);
       } finally {
-        setLoading(false); // Hide loading indicator
+        setLoading(false); 
       }
     };
 
-    fetchData(); // Call fetch function
+    fetchData(); 
   }, [currentPage, searchQuery, propertyType, minPrice, maxPrice]);
+
 
   const handlePageChange = (direction) => {
     setCurrentPage((prev) =>
@@ -48,7 +47,7 @@ const PropertyCard = () => {
     );
     window.scrollTo();
   };
-
+  
   const handleContact = () => {
     window.open("https://wa.link/9mexid", "_blank");
   };
