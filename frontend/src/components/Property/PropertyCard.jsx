@@ -1,183 +1,230 @@
-import { useState, useEffect } from "react";
-import "./PropertyCard.css"; 
-import { ListGroup, Form, Button, Spinner, Alert } from "react-bootstrap";
-import axios from "axios"; 
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import {
+  FaSearch,
+  FaMapMarkerAlt,
+  FaVectorSquare,
+  FaUser,
+  FaPhone,
+  FaFilter,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
+import "./PropertyCard.css";
 
 const PropertyCard = () => {
-  const [properties, setProperties] = useState([]); 
-  const [currentPage, setCurrentPage] = useState(1); 
-  const limit = 3; // Number of properties per page
+  const [properties, setProperties] = useState([]);
+  const [filteredProperties, setFilteredProperties] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 6;
 
-  const [searchQuery, setSearchQuery] = useState(""); 
-  const [loading, setLoading] = useState(false); 
-  const [error, setError] = useState(null); 
-  const [propertyType, setPropertyType] = useState(""); 
-  const [minPrice, setMinPrice] = useState(0); 
-  const [maxPrice, setMaxPrice] = useState(10000); 
- 
+  // Filters
+  const [searchQuery, setSearchQuery] = useState("");
+  const [propertyType, setPropertyType] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [location, setLocation] = useState("");
+
+  // UI
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
+
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true); 
-      setError(null); 
-
+    const fetchProperties = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/properties?&page=${currentPage}&limit=${limit}&search=${searchQuery}&propertyType=${propertyType}&minPrice=${minPrice}&maxPrice=${maxPrice}`
-        );
-        setProperties(response.data); 
+        setLoading(true);
+        const res = await fetch("http://localhost:5000/api/properties");
+        if (!res.ok) throw new Error("Failed to fetch properties");
+        const data = await res.json();
+        setProperties(data);
+        setFilteredProperties(data);
       } catch (err) {
-        const errorMessage =
-          err.response?.data?.message ||
-          err.message ||
-          "Error fetching properties. Please try again.";
-        setError(errorMessage);
+        setError(err.message);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
+    fetchProperties();
+  }, []);
 
-    fetchData(); 
-  }, [currentPage, searchQuery, propertyType, minPrice, maxPrice]);
+  useEffect(() => {
+    let filtered = properties;
 
+    if (searchQuery) {
+      filtered = filtered.filter(
+        (property) =>
+          property.property_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          property.location.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    if (propertyType) {
+      filtered = filtered.filter((p) => p.property_type === propertyType);
+    }
+    if (location) {
+      filtered = filtered.filter((p) =>
+        p.location.toLowerCase().includes(location.toLowerCase())
+      );
+    }
+    if (minPrice) {
+      filtered = filtered.filter((p) => p.property_value >= parseInt(minPrice));
+    }
+    if (maxPrice) {
+      filtered = filtered.filter((p) => p.property_value <= parseInt(maxPrice));
+    }
 
-  const handlePageChange = (direction) => {
-    setCurrentPage((prev) =>
-      direction === "next" ? prev + 1 : prev > 1 ? prev - 1 : 1
-    );
-    window.scrollTo();
+    setFilteredProperties(filtered);
+    setCurrentPage(1);
+  }, [searchQuery, propertyType, location, minPrice, maxPrice, properties]);
+
+  const totalPages = Math.ceil(filteredProperties.length / limit);
+  const startIndex = (currentPage - 1) * limit;
+  const paginatedProperties = filteredProperties.slice(startIndex, startIndex + limit);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  
+
   const handleContact = () => {
     window.open("https://wa.link/9mexid", "_blank");
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    switch (name) {
-      case "searchQuery":
-        setSearchQuery(value);
-        break;
-      case "propertyType":
-        setPropertyType(value);
-        break;
-      case "minPrice":
-        setMinPrice(Number(value));
-        break;
-      case "maxPrice":
-        setMaxPrice(Number(value));
-        break;
-      default:
-        break;
+  const formatPrice = (price) => {
+    if (price >= 10000000) {
+      return `₹${(price / 10000000).toFixed(1)}Cr`;
+    } else if (price >= 100000) {
+      return `₹${(price / 100000).toFixed(1)}L`;
+    } else {
+      return `₹${price.toLocaleString()}`;
     }
   };
 
+  const clearFilters = () => {
+    setSearchQuery("");
+    setPropertyType("");
+    setLocation("");
+    setMinPrice("");
+    setMaxPrice("");
+  };
+
   return (
-    <div className="property-page">
-      {/* Filter Section */}
-      <Form className="filters">
-        <Form.Group controlId="searchQuery">
-          <Form.Label>Search by Name</Form.Label>
-          <Form.Control
-            type="text"
-            name="searchQuery"
-            value={searchQuery}
-            onChange={handleChange}
-            placeholder="Search properties..."
-          />
-        </Form.Group>
+    <div className="property-container">
+      <div className="property-wrapper">
+        {/* Header */}
+        <div className="property-header">
+          <h1>Premium Properties</h1>
+          <p>Discover exceptional investment opportunities</p>
+        </div>
 
-        <Form.Group controlId="propertyType">
-          <Form.Label>Filter by Property Type</Form.Label>
-          <Form.Control
-            as="select"
-            name="location"
-            value={location}
-            onChange={handleChange}
-          >
-            <option value="">All</option>
-            <option value="Residential">Residential</option>
-            <option value="Commercial">Commercial</option>
-            <option value="office">Office</option>
-            <option value="Shop">Shop</option>
-            <option value="Showroom">Showroom</option>
-          </Form.Control>
-        </Form.Group>
+        {/* Search and Filters */}
+        <div className="filter-box">
+          <div className="search-bar">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search properties by name or location..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
 
-        <Form.Group controlId="minPrice">
-          <Form.Label>Min Price</Form.Label>
-          <Form.Control
-            type="number"
-            name="minPrice"
-            onChange={handleChange}
-            placeholder="Min Price"
-          />
-        </Form.Group>
+          <div className="filter-actions">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="btn btn-primary"
+            >
+              <FaFilter /> Advanced Filters
+            </button>
+            {(propertyType || location || minPrice || maxPrice) && (
+              <button onClick={clearFilters} className="btn-clear">
+                Clear Filters
+              </button>
+            )}
+          </div>
+        </div>
 
-        <Form.Group controlId="maxPrice">
-          <Form.Label>Max Price</Form.Label>
-          <Form.Control
-            type="number"
-            name="maxPrice"
-            onChange={handleChange}
-            placeholder="Max Price"
-          />
-        </Form.Group>
-
-        <Button variant="primary" onClick={() => setCurrentPage(1)}>
-          Apply Filters
-        </Button>
-      </Form>
-
-      {/* Loading Indicator */}
-      {loading && (
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading</span>
-        </Spinner>
-      )}
-
-      {/* Error Handling */}
-      {error && <Alert variant="danger">{error}</Alert>}
-
-      {/* List of Properties */}
-      <ListGroup className="items">
-        {properties.length > 0 ? (
-          properties.map((property) => (
-            <ListGroup.Item key={property._id} className="property-card" >
-              <Link to={`/BUY/${property._id}`} target="_blank">
-                <img
-                  src={property.thumbnail || "property-thumbnail.jpg"}
-                  alt={property.property_name}
-                  className="property-thumbnail"
-                />
-              </Link>
-              <div className="property-details">
-                <h3>{property.property_name || "Unnamed Property"}</h3>
-                <p>Location: {property.location}</p>
-                <p>Size: {property.property_size} sqft</p>
-                <p>min-Value{property.property_value}</p>
-                <p>Owner: {property.owner_name}</p>
-              </div>
-              <div className="contact-section">
-                <button onClick={handleContact}>WhatsApp us</button>
-                <p>Monthly Profit: 2 lakh</p>
-              </div>
-            </ListGroup.Item>
-          ))
-        ) : (
-          <p>No properties available at the moment.</p>
+        {/* Loading */}
+        {loading && (
+          <div className="loading">
+            <div className="spinner"></div>
+            <span>Loading properties...</span>
+          </div>
         )}
-      </ListGroup>
 
-      {/* Pagination Section */}
-      <div className="pagination">
-        <button
-          onClick={() => handlePageChange("prev")}
-          disabled={currentPage === 1}
-        >
-          PREV PAGE
-        </button>
-        <button onClick={() => handlePageChange("next")}>NEXT PAGE</button>
+        {/* Error */}
+        {error && <div className="error-box">{error}</div>}
+
+        {/* Properties Grid */}
+        {!loading && (
+          <div className="property-grid">
+            {paginatedProperties.length > 0 ? (
+              paginatedProperties.map((property) => (
+                <div key={property._id} className="property-card">
+                  <div className="property-image">
+                    <img src={property.thumbnail} alt={property.property_name} />
+                    <span className="badge type">{property.property_type}</span>
+                    <span className="badge price">{formatPrice(property.property_value)}</span>
+                  </div>
+
+                  <div className="property-details">
+                    <h3>{property.property_name}</h3>
+                    <div className="info">
+                      <p><FaMapMarkerAlt /> {property.location}</p>
+                      <p><FaVectorSquare /> {property.property_size} sqft</p>
+                      <p><FaUser /> Owner: {property.owner_name}</p>
+                    </div>
+
+                    <div className="profit-box">
+                      <span>Monthly Profit</span>
+                      <strong>₹{(property.monthly_profit / 100000).toFixed(1)}L</strong>
+                    </div>
+
+                    <div className="actions">
+                      <button onClick={handleContact} className="btn btn-green">
+                        <FaPhone /> WhatsApp
+                      </button>
+                      <button className="btn btn-blue">View Details</button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-results">
+                <p>No properties found matching your criteria.</p>
+                <button onClick={clearFilters} className="btn-clear">
+                  Clear all filters
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <FaChevronLeft /> Previous
+            </button>
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                className={currentPage === index + 1 ? "active" : ""}
+              >
+                {index + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next <FaChevronRight />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -48,9 +48,8 @@ const propertySchema = new mongoose.Schema({
     type: String,
   },
   property_image: {
-    type: String,
-    required:true,
-  },
+  type: [String], // array of strings (filenames/URLs)
+  }
 });
 
 

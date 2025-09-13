@@ -1,12 +1,35 @@
-const register =async (req, res) => {
+const User = require('../models/user')
+const { StatusCodes } = require('http-status-codes')
+const { BadRequestError, UnauthenticatedError } = require('../errors/index')
+
+const register = async (req, res) => {
+    let newUser = {}
     try {
-        console.log(req.body)
-
-        res.status(200).json({msg: req.body})
-    } 
-    catch (error) {
-        res.status(500).json(error, "internal server error")
+        newUser = await User.create({...req.body})
+    } catch (error) {
+        console.log(error)
+        throw error(error,"Please provide all the details")
     }
-};
+}
 
-module.exports={register}  
+const login = async(req, res) => {
+    const {email, password} = req.body
+    if(!email || !password){
+        throw error(error, "Please provide both password and email")
+    }
+    const existingUser = await User.findOne({ email }).select("+password")
+    if(!existingUser){
+        throw new UnauthenticatedError("Invalid Credentials")
+    }
+    const isPasswordCorrect = await existingUser.comparePasswords(password)
+    if(!isPasswordCorrect){
+        throw new UnauthenticatedError("Incorrect Password")
+    }
+    
+}
+
+
+module.exports = {
+    register, 
+    login
+} 

@@ -1,58 +1,89 @@
-/* General Carousel Styling */
-.carousel {
-  width: 100%;
-  max-width: 1000px; /* Adjust the max width of the carousel */
-  margin: 0 auto; /* Center the carousel horizontally */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+/* Additional styles for enhanced functionality */
+.carousel-wrapper {
+  position: relative;
+  padding: 20px 0;
 }
 
-.carousel-item img {
-  object-fit: cover; /* Make sure the image covers the full area */
-  width: 100%;
-  height: 500px; /* Set a fixed height for consistency */
-  border-radius: 8px; /* Optional: Add rounded corners */
+.carousel-inner {
+  position: relative;
+  overflow: hidden;
 }
 
-/* Caption Styling */
-.carousel-caption {
+.carousel-item {
+  display: none;
+  position: relative;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.carousel-item.active {
+  display: block;
+}
+
+/* Navigation Controls */
+.carousel-control {
   position: absolute;
-  bottom: 20px; /* Position the caption slightly above the bottom */
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 18px;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.carousel-control:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-control-prev {
   left: 20px;
+}
+
+.carousel-control-next {
   right: 20px;
-  background: rgba(0, 0, 0, 0.5); /* Dark transparent background for better readability */
-  padding: 20px;
-  border-radius: 5px; /* Rounded edges */
-  text-align: left;
-  color: #fff;
 }
 
-.carousel-caption h3 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
+/* Slide Indicators */
+.carousel-indicators {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
 }
 
-.carousel-caption p {
-  font-size: 16px;
+.carousel-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* Media Queries for Smaller Devices */
-@media (max-width: 768px) {
-  .carousel-item img {
-    height: 300px; /* Adjust image height for smaller devices */
-  }
-
-  .carousel-caption {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .carousel-caption h3 {
-    font-size: 20px;
-  }
-
-  .carousel-caption p {
-    font-size: 14px;
-  }
+.carousel-indicator.active,
+.carousel-indicator:hover {
+  background: white;
+  border-color: white;
+  transform: scale(1.2);
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

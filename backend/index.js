@@ -5,26 +5,25 @@ import Property from "./models/properties.js";
 import cors from "cors";
 import Upcoming from "./models/upcoming.js";
 import User from "./models/user.js";
-import multer from "multer"; // Import multer for file uploads
-
+import multer from "multer";
 const app = express();
 app.use(cors());
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true })); // Parses incoming URL-encoded data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 5000;
 
 // Multer configuration for handling file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./uploads/"); // Specify the directory where files will be stored
+    cb(null, "./uploads/");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname); // Unique filename generation
   },
 });
 
-const upload = multer({ storage: storage }); 
+const upload = multer({ storage: storage });
 
 const connectToDB = async () => {
   try {
@@ -45,12 +44,13 @@ app.get("/", (req, res) => {
 
 // Get properties with search, price range, and pagination
 app.get("/api/properties", async (req, res) => {
+  
   try {
     const searchQuery = req.query.search || "";
     const minPrice = Number(req.query.minPrice) || 0;
     const maxPrice = Number(req.query.maxPrice) || 100000;
     const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 3;
+    const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
     // Validate price range
@@ -84,6 +84,7 @@ app.post(
   async (req, res) => {
     console.log("Received Data:", req.body);
     console.log("Received Files:", req.files);
+
     try {
       const {
         property_id,
@@ -99,13 +100,9 @@ app.post(
         property_type,
       } = req.body;
 
-      // Access uploaded file paths
-      const thumbnailPath = req.files?.thumbnail
-        ? req.files.thumbnail[0].path
-        : null;
-      const propertyImagePath = req.files?.property_image
-        ? req.files.property_image[0].path
-        : null;
+      // Access uploaded file paths safely
+      const thumbnailPath = req.files?.thumbnail?.[0]?.path || null;
+      const propertyImagePath = req.files?.property_image?.[0]?.path || null;
 
       // Create new property entry
       const property = await Property.create({
@@ -121,15 +118,16 @@ app.post(
         last_inspection_date,
         property_type,
         thumbnail: thumbnailPath,
-        propertyImage: propertyImagePath,
+        propertyImage: propertyImagePath, 
       });
 
-      res
-        .status(201)
-        .json({ message: "property added successfully", property });
+      res.status(201).json({
+        message: "Property added successfully",
+        property,
+      });
     } catch (err) {
       console.error("Error adding property:", err);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message});
     }
   }
 );
@@ -155,7 +153,7 @@ app.get("/api/upcoming", async (req, res) => {
 app.get("/api/properties/:property_id", async (req, res) => {
   try {
     const propertyId = req.params.property_id;
-    const property = await Property.findById(propertyId);
+    const property = await Property.findOne({ property_id: propertyId });
 
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
@@ -189,18 +187,122 @@ app.post("/api/register", async (req, res) => {
     // Save the user to the database
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        msg: "User registered successfully",
-        token: await user.generateToken(),
-        user_id: user._id.toString(),
-      });
+    res.status(200).json({
+      msg: "User registered successfully",
+      token: await user.generateToken(),
+      user_id: user._id.toString(),
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
 });
+
+// SELL a property
+app.post(
+  "/api/properties/sell",
+  upload.fields([
+    { name: "thumbnail", maxCount: 1 },
+    { name: "property_image", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const {
+        property_id,
+        property_name,
+        property_address,
+        property_size,
+        property_value,
+        location,
+        year_built,
+        owner_name,
+        owner_email,
+        last_inspection_date,
+        property_type,
+      } = req.body;
+
+      // Validate seller (must exist in User collection)
+      const seller = await User.findOne({ email: owner_email });
+      if (!seller) {
+        return res.status(400).json({ msg: "Seller not registered" });
+      }
+
+      // Check if property already exists
+      const existingProperty = await Property.findOne({ property_id });
+      if (existingProperty) {
+        return res.status(400).json({ msg: "Property already listed" });
+      }
+
+      // Save images if provided
+      const thumbnailPath = req.files?.thumbnail?.[0]?.path || null;
+      const propertyImagePath = req.files?.property_image?.[0]?.path || null;
+
+      // Create property
+      const property = await Property.create({
+        property_id,
+        property_name,
+        property_address,
+        property_size,
+        property_value,
+        location,
+        year_built,
+        owner_name,
+        owner_email,
+        last_inspection_date,
+        property_type,
+        thumbnail: thumbnailPath,
+        property_image: propertyImagePath,
+      });
+
+      res.status(201).json({
+        msg: "Property listed for sale successfully",
+        property,
+      });
+    } catch (error) {
+      console.error("Error selling property:", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+// BUY a property
+app.post("/api/properties/buy/:property_id", async (req, res) => {
+  try {
+    const propertyId = req.params.property_id;
+    const { buyer_email } = req.body;
+
+    // Validate buyer
+    const buyer = await User.findOne({ email: buyer_email });
+    if (!buyer) {
+      return res.status(400).json({ msg: "Buyer not registered" });
+    }
+
+    // Find property
+    const property = await Property.findOne({ property_id: propertyId });
+    if (!property) {
+      return res.status(404).json({ msg: "Property not found" });
+    }
+
+    // Prevent buying own property
+    if (property.owner_email === buyer_email) {
+      return res.status(400).json({ msg: "You already own this property" });
+    }
+
+    // Transfer ownership
+    property.owner_name = buyer.user_name;
+    property.owner_email = buyer.email;
+    await property.save();
+
+    res.status(200).json({
+      msg: "Property purchased successfully",
+      property,
+    });
+  } catch (error) {
+    console.error("Error buying property:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

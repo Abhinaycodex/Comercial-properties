@@ -40,7 +40,7 @@ userSchema.methods.generateToken = await function ( ){
      }, 
      process.env.JWT_SECRET_KEY,
      {
-      expiresIn:"30s",
+      expiresIn:"300s",
      }
     )
 
