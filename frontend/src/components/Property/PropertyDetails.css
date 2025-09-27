@@ -1,0 +1,140 @@
+/* Container */
+.property-details-page {
+  font-family: "Inter", sans-serif;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #333;
+}
+
+/* Banner */
+.property-banner {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.property-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(70%);
+}
+
+.property-banner .overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: #fff;
+}
+
+.property-banner h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.property-banner p {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Info Section */
+.property-info {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border: 1px solid #e5e7eb;
+}
+
+.property-info h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.property-info p {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+}
+
+/* Description */
+.property-description {
+  margin-bottom: 25px;
+}
+
+.property-description h2 {
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.property-description p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+/* Contact Section */
+.contact-section {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.contact-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+  color: #065f46;
+}
+
+.contact-section .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-section .btn-green {
+  background: #10b981;
+  color: #fff;
+  border: none;
+}
+
+.contact-section .btn-green:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+/* Loading & Error */
+.loading,
+.error {
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 20px;
+}
+
+.error {
+  color: #dc2626;
+}

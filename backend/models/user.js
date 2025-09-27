@@ -29,9 +29,9 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-//jwt wala part
+//jwt 
 
-userSchema.methods.generateToken = await function ( ){
+userSchema.methods.generateToken = function ( ){
   try {
     return jwt.sign({
        user_id: this._id.toString(),
@@ -40,7 +40,7 @@ userSchema.methods.generateToken = await function ( ){
      }, 
      process.env.JWT_SECRET_KEY,
      {
-      expiresIn:"300s",
+      expiresIn:"30000s",
      }
     )
 

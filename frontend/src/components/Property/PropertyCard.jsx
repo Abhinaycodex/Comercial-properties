@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   FaSearch,
   FaMapMarkerAlt,
@@ -33,7 +34,7 @@ const PropertyCard = () => {
     const fetchProperties = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:5000/api/properties");
+        const res = await fetch("http://localhost:5000/api/properties/");
         if (!res.ok) throw new Error("Failed to fetch properties");
         const data = await res.json();
         setProperties(data);
@@ -183,7 +184,10 @@ const PropertyCard = () => {
                       <button onClick={handleContact} className="btn btn-green">
                         <FaPhone /> WhatsApp
                       </button>
-                      <button className="btn btn-blue">View Details</button>
+                      
+                      <Link to={`/properties/${property._id}`} className="btn btn-blue">
+                        View Details
+                      </Link>
                     </div>
                   </div>
                 </div>

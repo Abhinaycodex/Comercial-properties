@@ -172,7 +172,7 @@
         /* Small mobile styles */
         @media (max-width: 480px) {
           .navbar {
-            min-height: 60px;
+            min-height: 40px;
           }
 
           .nav-container {

@@ -6,15 +6,15 @@ import Footer from "./components/Footer/Footer"
 
 function Layout() {
   return (
-    <>
+    <div className="layout">
       <NavBar />
-      <br />
-      <HomeSection />
-      <br />
-      <Tabs />
-      <Aboutus />
+      <main className="main-content">
+        <HomeSection />
+        <Tabs />
+        <Aboutus />
+      </main>
       <Footer />
-    </>
+    </div>
   )
 }
 

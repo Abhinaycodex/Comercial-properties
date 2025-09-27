@@ -82,8 +82,10 @@ const Sell = () => {
   };
 
   return (
+    <><NavBar />
     <div className="sell-property-container">
-      <NavBar />
+      
+
       <h2>Sell Your Property</h2>
       <form onSubmit={handleSubmit} className="sell-form">
         <input
@@ -185,8 +187,10 @@ const Sell = () => {
         <button type="submit">Add Property</button>
       </form>
       {message && <p className="message">{message}</p>}
-      <Footer />
+      
     </div>
+    <Footer />
+    </>
   );
 };
 

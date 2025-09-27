@@ -1,6 +1,5 @@
 const User = require('../models/user')
-const { StatusCodes } = require('http-status-codes')
-const { BadRequestError, UnauthenticatedError } = require('../errors/index')
+const { UnauthenticatedError } = require('../errors/index')
 
 const register = async (req, res) => {
     let newUser = {}
@@ -8,7 +7,7 @@ const register = async (req, res) => {
         newUser = await User.create({...req.body})
     } catch (error) {
         console.log(error)
-        throw error(error,"Please provide all the details")
+        throw new UnauthenticatedError("Please provide all the details")
     }
 }
 

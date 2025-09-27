@@ -1,89 +1,122 @@
-import  { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import  Navbar  from "../NavBar/NavBar";
+import Navbar from "../NavBar/NavBar";
 import Footer from "../Footer/Footer";
+import './Register.css';
+
 
 const Register = () => {
-  // State for form inputs
   const [formData, setFormData] = useState({
     user_name: "",
     email: "",
     password: "",
   });
 
-  // State for response messages
+  const [isRegister, setIsRegister] = useState(true);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  const toggleMode = () => {
+    setIsRegister((prev) => !prev);
+    setMessage("");
+    setFormData({ user_name: "", email: "", password: "" });
   };
 
-  // Handle form submission
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setMessage("");
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formDataToSend = new FormData();
-    formDataToSend.append("user_name", formData.user_name);
-    formDataToSend.append("email", formData.email);
-    formDataToSend.append("password", formData.password);
+
+    const endpoint = isRegister
+      ? "http://localhost:5000/api/register"
+      : "http://localhost:5000/api/login";
+
+    setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/register", formData);
-      
-      setMessage(response.data.message || "User registered successfully!");
+      const response = await axios.post(endpoint, formData, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const msg = response.data.message || (isRegister ? "Registered!" : "Logged in!");
+      setMessage(msg);
+
+      if (!isRegister && response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        // redirect if needed
+      }
+
     } catch (error) {
       console.error(error);
-      setMessage(error.response?.data?.message || "Error: Could not register user.");
+      setMessage(error.response?.data?.message || "An error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="register-container">
+    <>
       <Navbar />
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-        <label htmlFor="email">Name:</label>
-          <input
-            type="text"
-            id="user_name"
-            name="user_name"
-            value={formData.user_name}
-            onChange={handleChange}
-            required
-          />
+      <div className="auth-container">
+        <div className="auth-box">
+          <h2>{isRegister ? "Register" : "Login"}</h2>
+          <form onSubmit={handleSubmit} className="auth-form">
+            {isRegister && (
+              <div className="form-group">
+                <label htmlFor="user_name">Name</label>
+                <input
+                  type="text"
+                  id="user_name"
+                  name="user_name"
+                  value={formData.user_name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            )}
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <button type="submit" className="auth-btn" disabled={loading}>
+              {loading ? "Please wait..." : isRegister ? "Register" : "Login"}
+            </button>
+            <button type="button" className="toggle-btn" onClick={toggleMode}>
+              {isRegister
+                ? "Already have an account? Login"
+                : "Don't have an account? Register"}
+            </button>
+          </form>
+          {message && <p className="auth-message">{message}</p>}
         </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Register</button>
-      </form>
-      {message && <p>{message}</p>}
+      </div>
       <Footer />
-    </div>
+    </>
   );
 };
 

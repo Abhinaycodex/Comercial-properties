@@ -1,4 +1,11 @@
-/* General Form Styling */
+.sell-property-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  overflow-y: auto; /* <-- add this */
+  height: 100vh;     /* <-- or increase height */
+}
+
 form {
     width: 80%;
     max-width: 600px;

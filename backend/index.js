@@ -6,10 +6,13 @@ import cors from "cors";
 import Upcoming from "./models/upcoming.js";
 import User from "./models/user.js";
 import multer from "multer";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 const port = process.env.PORT || 5000;
 
@@ -150,10 +153,10 @@ app.get("/api/upcoming", async (req, res) => {
 });
 
 // Get property by ID
-app.get("/api/properties/:property_id", async (req, res) => {
+app.get("/api/properties/:_id", async (req, res) => {
   try {
-    const propertyId = req.params.property_id;
-    const property = await Property.findOne({ property_id: propertyId });
+    const propertyId = req.params._id;
+    const property = await Property.findOne({ _id: propertyId });
 
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
@@ -168,35 +171,47 @@ app.get("/api/properties/:property_id", async (req, res) => {
   }
 });
 
+
+
+const JWT_SECRET = process.env.JWT_SECRET || "yourSecretKey"; 
+
 app.post("/api/register", async (req, res) => {
   try {
-    // Destructure according to the schema
     const { user_name, email, password } = req.body;
 
-    //email logic
+    // Check if email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res
         .status(400)
-        .json({ msg: "User with this email already exists." });
+        .json({ message: "User with this email already exists." });
     }
 
-    // Create a new user instance
-    const user = new User({ user_name, email, password });
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Save the user to the database
+    // Create user
+    const user = new User({ user_name, email, password: hashedPassword });
+
+    // Save user
     await user.save();
 
-    res.status(200).json({
-      msg: "User registered successfully",
-      token: await user.generateToken(),
+    // Generate JWT Token
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
       user_id: user._id.toString(),
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Server error" });
+    console.error("Registration error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
+
+
+
 
 // SELL a property
 app.post(

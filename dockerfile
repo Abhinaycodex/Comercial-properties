@@ -1,13 +1,20 @@
- FROM node 
+FROM node:20-alpine
 
- WORKDIR /myapp
+# Set working directory
+WORKDIR /myapp
 
- COPY . . 
+# Copy package.json and package-lock.json first for better caching
+COPY package*.json ./
 
+# Install dependencies
+RUN npm install
 
- RUN npm install 
+# Copy the rest of the application code
+COPY . .
 
+# Expose the port your app runs on (change if needed)
+EXPOSE 3000
 
- RUN npm run dev
+# Start the app
+CMD ["npm", "run", "dev"]
 
- 

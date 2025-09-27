@@ -54,12 +54,7 @@ const BuyPage = () => {
   return (
     <div>
       <NavBar />
-      <PropertyCard />
-      <h1>{property.property_name}</h1>
-      <p>Location: {property.location}</p>
-      <p>Size: {property.property_size} sqft</p>
-      <p>Value: {property.property_value}</p>
-      <p>Owner: {property.owner_name}</p>
+      <PropertyCard property={property} />
       <Footer />
     </div>
   );
